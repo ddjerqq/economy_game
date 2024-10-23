@@ -1,0 +1,43 @@
+﻿services:
+  api:
+    container_name: api
+    image: ddjerqq/chfs:latest
+    ports:
+      - "80:1080"
+      - "443:1443"
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --fail http://api:1080/api/v1/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    shm_size: 512mb
+    environment:
+      - WEB_APP__DOMAIN=app.econgame.io
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://0.0.0.0:1080;https://0.0.0.0:1443
+      - ASPNETCORE_DATAPROTECTION__PATH=/var/data-protection
+      - DB__PATH=/var/data/app.db
+    volumes:
+      - ./.aspnet/dp:/var/data-protection
+      - ./.aspnet/https:/https/:ro
+      - ./.data:/var/data
+    restart: unless-stopped
+
+  seq:
+    container_name: seq
+    image: datalust/seq:latest
+    ports:
+      - "1080:80"
+      - "5341:5341"
+    shm_size: 128mb
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ__HOST=seq
+      - SEQ__PORT=5341
+      - SEQ_FIRSTRUN_ADMINUSERNAME=admin
+      - SEQ_FIRSTRUN_ADMINPASSWORDHASH=QM7upuuFCymR88XBK3VlFXLTQ+knOOjVzhdZvISdh5zPC78LMaZeUeSl7JZD5YAagIO4N0iM6BiObPy0aN7lbwwctMZhidPWS9DFMTXWvJFE
+    volumes:
+      - /var/log/econgame/seq/:/data
+    restart: unless-stopped
