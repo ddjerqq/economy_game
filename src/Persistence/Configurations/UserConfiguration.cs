@@ -14,6 +14,9 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.Email).HasMaxLength(64);
         builder.Property(x => x.PasswordHash).HasMaxLength(64);
 
+        builder.HasIndex(x => x.Username).IsUnique();
+        builder.HasIndex(x => x.Email).IsUnique();
+
         // builder.HasMany(user => user.SavingGoals)
         //     .WithOne(savingGoal => savingGoal.Owner)
         //     .HasForeignKey(savingGoal => savingGoal.OwnerId);

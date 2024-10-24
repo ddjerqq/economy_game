@@ -31,6 +31,6 @@ public sealed class ConfigureAuth : ConfigurationBase
         // an example, of an authorization policy
         services.AddAuthorizationBuilder()
             .AddDefaultPolicy("default", policy => policy.RequireAuthenticatedUser())
-            .AddPolicy("is_elon", policy => policy.RequireClaim(JwtRegisteredClaimNames.Name, "elon"));
+            .AddPolicy("is_elon", policy => policy.RequireClaim(JwtRegisteredClaimNames.Name, "ELON"));
     }
 }

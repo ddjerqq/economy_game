@@ -13,7 +13,7 @@ namespace WebApi.Controllers.V1;
 /// Controller for authentication actions
 /// </summary>
 [Authorize]
-public sealed class AuthController(ILogger<ApiController> logger, IAppDbContext dbContext, IMediator mediator) : ApiController(logger)
+public sealed class AuthController(ILogger<AuthController> logger, IAppDbContext dbContext, IMediator mediator) : ApiController(logger)
 {
     /// <summary>
     /// Gets the user's claims
@@ -64,5 +64,16 @@ public sealed class AuthController(ILogger<ApiController> logger, IAppDbContext 
         var (user, token) = await mediator.Send(command, ct);
         Response.Cookies.Append("authorization", token);
         return Ok(user);
+    }
+
+    /// <summary>
+    /// Gets all users
+    /// <note>This is only for Elon</note>
+    /// </summary>
+    [Authorize(Policy = "is_elon")]
+    [HttpGet("all_users")]
+    public async Task<ActionResult<IEnumerable<User>>> GetAllUsers(CancellationToken ct)
+    {
+        return Ok(await dbContext.Users.ToListAsync(ct));
     }
 }

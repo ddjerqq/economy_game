@@ -37,7 +37,7 @@ public sealed class RegisterCommandValidator : AbstractValidator<RegisterCommand
     }
 }
 
-public sealed class RegisterCommandHandler(IAppDbContext dbContext, IJwtGenerator jwtGenerator) : IRequestHandler<RegisterCommand, (User User, string Token)>
+internal sealed class RegisterCommandHandler(IAppDbContext dbContext, IJwtGenerator jwtGenerator) : IRequestHandler<RegisterCommand, (User User, string Token)>
 {
     public async Task<(User User, string Token)> Handle(RegisterCommand request, CancellationToken ct)
     {

@@ -9,6 +9,14 @@ public sealed class User(Ulid id) : AggregateRoot<Ulid>(id)
     public string PasswordHash { get; set; } = default!;
     public decimal Balance { get; set; }
 
+    public bool TryTransfer(User other, decimal amount)
+    {
+        if (Balance < amount) return false;
+        Balance -= amount;
+        other.Balance += amount;
+        return true;
+    }
+
     /// <summary>
     /// Constructor for new users
     /// </summary>

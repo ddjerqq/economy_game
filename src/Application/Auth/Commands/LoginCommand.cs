@@ -15,11 +15,11 @@ public abstract record LoginResponse
 
 public sealed record LoginCommand(string Email, string Password) : IRequest<LoginResponse>;
 
-public sealed class LoginCommandHandler(IAppDbContext dbContext, IJwtGenerator jwtGenerator) : IRequestHandler<LoginCommand, LoginResponse>
+internal sealed class LoginCommandHandler(IAppDbContext dbContext, IJwtGenerator jwtGenerator) : IRequestHandler<LoginCommand, LoginResponse>
 {
     public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken ct)
     {
-        var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Email == request.Email, ct);
+        var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Email == request.Email.ToUpperInvariant(), ct);
         if (user is null || !BC.EnhancedVerify(request.Password, user.PasswordHash))
             return new LoginResponse.Failure();
 
